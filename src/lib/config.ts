@@ -15,7 +15,8 @@ export const AI_CONFIG = {
     // Text-to-image models supported in Pixilator
     imageModels: [
       { id: 'tencent/HunyuanImage-3.0', name: 'HunyuanImage 3.0' },
-      { id: 'black-forest-labs/FLUX.1-dev', name: 'FLUX.1-dev' },
+      { id: 'black-forest-labs/FLUX.1-dev', name: 'Black Forest Labs Flux.1-dev' },
+      { id: 'stabilityai/stable-diffusion-xl-base-1.0', name: 'Stability AI Stable Diffusion XL Base 1.0' },
     ],
     // Optional: LLMs for prompt enhancement if desired later
     models: {

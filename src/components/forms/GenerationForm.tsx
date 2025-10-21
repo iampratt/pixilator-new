@@ -70,7 +70,7 @@ export function GenerationForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Prompt Input */}
         <div>
-          <label htmlFor="prompt" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-2">
             Describe your image
           </label>
           <textarea
@@ -78,7 +78,7 @@ export function GenerationForm() {
             value={formData.prompt}
             onChange={(e) => handleInputChange('prompt', e.target.value)}
             placeholder="A majestic mountain landscape at sunset..."
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="salt-paper-input w-full px-4 py-3 rounded-lg resize-none"
             rows={3}
             disabled={isGenerating}
           />
@@ -86,18 +86,18 @@ export function GenerationForm() {
 
         {/* Style Selection */}
         <div>
-          <label htmlFor="style" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="style" className="block text-sm font-medium text-gray-700 mb-2">
             Style
           </label>
           <select
             id="style"
             value={formData.style}
             onChange={(e) => handleInputChange('style', e.target.value)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="salt-paper-input w-full px-4 py-3 rounded-lg"
             disabled={isGenerating}
           >
             {STYLE_PRESETS.map((style) => (
-              <option key={style.id} value={style.id} className="bg-gray-800">
+              <option key={style.id} value={style.id}>
                 {style.name}
               </option>
             ))}
@@ -106,18 +106,18 @@ export function GenerationForm() {
 
         {/* Aspect Ratio */}
         <div>
-          <label htmlFor="aspectRatio" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="aspectRatio" className="block text-sm font-medium text-gray-700 mb-2">
             Aspect Ratio
           </label>
           <select
             id="aspectRatio"
             value={formData.aspectRatio}
             onChange={(e) => handleInputChange('aspectRatio', e.target.value)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="salt-paper-input w-full px-4 py-3 rounded-lg"
             disabled={isGenerating}
           >
             {ASPECT_RATIOS.map((ratio) => (
-              <option key={ratio.id} value={ratio.value} className="bg-gray-800">
+              <option key={ratio.id} value={ratio.value}>
                 {ratio.name}
               </option>
             ))}
@@ -126,25 +126,26 @@ export function GenerationForm() {
 
         {/* Model Version */}
         <div>
-          <label htmlFor="modelVersion" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="modelVersion" className="block text-sm font-medium text-gray-700 mb-2">
             Model Version
           </label>
           <select
             id="modelVersion"
             value={formData.modelVersion}
             onChange={(e) => handleInputChange('modelVersion', e.target.value)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="salt-paper-input w-full px-4 py-3 rounded-lg"
             disabled={isGenerating}
           >
-            <option value="tencent/HunyuanImage-3.0" className="bg-gray-800">HunyuanImage 3.0</option>
-            <option value="black-forest-labs/FLUX.1-dev" className="bg-gray-800">FLUX.1-dev</option>
+            <option value="tencent/HunyuanImage-3.0">HunyuanImage 3.0</option>
+            <option value="black-forest-labs/FLUX.1-dev">FLUX.1-dev</option>
+            <option value="stabilityai/stable-diffusion-xl-base-1.0">Stability AI Stable Diffusion XL Base 1.0</option>
           </select>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-            <p className="text-red-300">{error}</p>
+          <div className="p-4 bg-red-100 border border-red-300 rounded-lg animate-fade-in-up">
+            <p className="text-red-700">{error}</p>
           </div>
         )}
 
@@ -152,11 +153,11 @@ export function GenerationForm() {
         <button
           type="submit"
           disabled={isGenerating || !formData.prompt.trim()}
-          className="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+          className="salt-paper-button w-full py-3 px-6 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center space-x-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               <span>Generating...</span>
             </div>
           ) : (
@@ -167,29 +168,47 @@ export function GenerationForm() {
 
       {/* Result Display */}
       {result && (
-        <div className="mt-6 p-4 bg-white/10 border border-white/20 rounded-lg">
-          <h3 className="text-lg font-semibold text-white mb-4">Generated Image</h3>
+        <div className="mt-6 p-4 salt-paper-card rounded-lg animate-fade-in-up">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Generated Image</h3>
           <div className="space-y-4">
-            <Image
-              src={result.imageUrl}
-              alt={result.originalPrompt}
-              width={1024}
-              height={1024}
-              className="w-full rounded-lg shadow-lg"
-              unoptimized
-            />
+            <div className="relative group">
+              <Image
+                src={result.imageUrl}
+                alt={result.originalPrompt}
+                width={1024}
+                height={1024}
+                className="w-full rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
+                unoptimized
+              />
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = result.imageUrl;
+                  link.download = `pixilator-${result.id}.png`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="absolute top-2 right-2 bg-white/90 hover:bg-white text-gray-900 p-2 rounded-full shadow-lg transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
+                title="Download image"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </button>
+            </div>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="text-gray-300">Original Prompt:</span>
-                <p className="text-white">{result.originalPrompt}</p>
+                <span className="text-gray-700 font-medium">Original Prompt:</span>
+                <p className="text-gray-600">{result.originalPrompt}</p>
               </div>
               <div>
-                <span className="text-gray-300">Enhanced Prompt:</span>
-                <p className="text-white">{result.refinedPrompt}</p>
+                <span className="text-gray-700 font-medium">Enhanced Prompt:</span>
+                <p className="text-gray-600">{result.refinedPrompt}</p>
               </div>
               <div>
-                <span className="text-gray-300">Processing Time:</span>
-                <p className="text-white">{result.processingTime}ms</p>
+                <span className="text-gray-700 font-medium">Processing Time:</span>
+                <p className="text-gray-600">{result.processingTime}ms</p>
               </div>
             </div>
           </div>
