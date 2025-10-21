@@ -16,8 +16,8 @@ export function Header() {
             <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
               Generate
             </Link>
-            <Link href="/history" className="text-gray-600 hover:text-gray-900 transition-colors">
-              History
+            <Link href="/library" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Library
             </Link>
             <Link href="/styles" className="text-gray-600 hover:text-gray-900 transition-colors">
               Styles

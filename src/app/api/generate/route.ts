@@ -149,54 +149,83 @@ export async function POST(request: NextRequest) {
     const negativePrompt = await generateNegativePrompt(style);
 
     // Step 3: Generate image
-    const imageUrl = await generateImage(refinedPrompt, negativePrompt, aspectRatio, modelVersion);
+    const imageBase64 = await generateImage(refinedPrompt, negativePrompt, aspectRatio, modelVersion);
 
     const processingTime = Date.now() - startTime;
 
-    // Step 4: Save to database (if user is authenticated)
+    // Step 4: Upload image to Supabase Storage and save to database
     let generationId: string | null = null;
+    let publicImageUrl: string = imageBase64; // Fallback to base64
+
     try {
       const supabase = createServerSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Convert base64 to blob
+      const base64Data = imageBase64.split(',')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      const blob = new Blob([buffer], { type: 'image/png' });
+      
+      // Generate unique filename
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 15);
+      const fileName = `generation-${timestamp}-${randomId}.png`;
+      
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('generated-images')
+        .upload(fileName, blob, {
+          contentType: 'image/png',
+          upsert: false
+        });
 
-      if (user) {
-        const { data, error } = await supabase
-          .from('generations')
-          .insert({
-            user_id: user.id,
-            original_prompt: prompt,
-            refined_prompt: refinedPrompt,
-            negative_prompt: negativePrompt,
-            image_url: imageUrl,
-            style,
-            aspect_ratio: aspectRatio,
-            model_version: modelVersion,
-            processing_time: processingTime,
-          })
-          .select()
-          .single();
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+      } else {
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('generated-images')
+          .getPublicUrl(fileName);
+        
+        publicImageUrl = publicUrl;
+      }
 
-        if (error) {
-          console.error('Database save error:', error);
-        } else {
-          generationId = data.id;
-        }
+      // Save to database (always save to public library)
+      const { data, error } = await supabase
+        .from('generations')
+        .insert({
+          user_id: 'public', // Public library - no user authentication required
+          original_prompt: prompt,
+          refined_prompt: refinedPrompt,
+          negative_prompt: negativePrompt,
+          image_url: publicImageUrl,
+          style,
+          aspect_ratio: aspectRatio,
+          model_version: modelVersion,
+          processing_time: processingTime,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database save error:', error);
+      } else {
+        generationId = data.id;
       }
     } catch (error) {
-      console.error('Database operation failed:', error);
+      console.error('Storage/Database operation failed:', error);
     }
 
     // Return the generation response
     const response: GenerationResponse = {
       id: generationId || `temp_${Date.now()}`,
-      imageUrl,
+      imageUrl: publicImageUrl,
       originalPrompt: prompt,
       refinedPrompt,
       negativePrompt,
       style,
       aspectRatio,
       modelVersion,
-      userId: '', // Will be filled if user is authenticated
+      userId: 'public', // Public library
       createdAt: new Date().toISOString(),
       processingTime,
     };

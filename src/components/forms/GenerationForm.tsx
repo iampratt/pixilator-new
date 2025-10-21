@@ -46,10 +46,8 @@ export function GenerationForm() {
       const data: GenerationResponse = await response.json();
       setResult(data);
 
-      // Save to local storage for history
-      const history = JSON.parse(localStorage.getItem('pixilator_history') || '[]');
-      history.unshift(data);
-      localStorage.setItem('pixilator_history', JSON.stringify(history.slice(0, 10)));
+      // Image is automatically saved to Supabase Storage and public library
+      // No need for localStorage since we're using the public library
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
