@@ -153,66 +153,72 @@ export async function POST(request: NextRequest) {
 
     const processingTime = Date.now() - startTime;
 
-    // Step 4: Upload image to Supabase Storage and save to database
+    // Step 4: Upload image to Supabase Storage and save to database (if configured)
     let generationId: string | null = null;
     let publicImageUrl: string = imageBase64; // Fallback to base64
 
-    try {
-      const supabase = createServerSupabaseClient();
-      
-      // Convert base64 to blob
-      const base64Data = imageBase64.split(',')[1];
-      const buffer = Buffer.from(base64Data, 'base64');
-      const blob = new Blob([buffer], { type: 'image/png' });
-      
-      // Generate unique filename
-      const timestamp = Date.now();
-      const randomId = Math.random().toString(36).substring(2, 15);
-      const fileName = `generation-${timestamp}-${randomId}.png`;
-      
-      // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('generated-images')
-        .upload(fileName, blob, {
-          contentType: 'image/png',
-          upsert: false
-        });
-
-      if (uploadError) {
-        console.error('Storage upload error:', uploadError);
-      } else {
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('generated-images')
-          .getPublicUrl(fileName);
+    // Check if Supabase is configured
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      try {
+        const supabase = createServerSupabaseClient();
         
-        publicImageUrl = publicUrl;
-      }
+        // Convert base64 to blob
+        const base64Data = imageBase64.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+        const blob = new Blob([buffer], { type: 'image/png' });
+        
+        // Generate unique filename
+        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substring(2, 15);
+        const fileName = `generation-${timestamp}-${randomId}.png`;
+        
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from('generated-images')
+          .upload(fileName, blob, {
+            contentType: 'image/png',
+            upsert: false
+          });
 
-      // Save to database (always save to public library)
-      const { data, error } = await supabase
-        .from('generations')
-        .insert({
-          user_id: 'public', // Public library - no user authentication required
-          original_prompt: prompt,
-          refined_prompt: refinedPrompt,
-          negative_prompt: negativePrompt,
-          image_url: publicImageUrl,
-          style,
-          aspect_ratio: aspectRatio,
-          model_version: modelVersion,
-          processing_time: processingTime,
-        })
-        .select()
-        .single();
+        if (uploadError) {
+          console.error('Storage upload error:', uploadError);
+        } else {
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('generated-images')
+            .getPublicUrl(fileName);
+          
+          publicImageUrl = publicUrl;
+        }
 
-      if (error) {
-        console.error('Database save error:', error);
-      } else {
-        generationId = data.id;
+        // Save to database (always save to public library)
+        const { data, error } = await supabase
+          .from('generations')
+          .insert({
+            user_id: 'public', // Public library - no user authentication required
+            original_prompt: prompt,
+            refined_prompt: refinedPrompt,
+            negative_prompt: negativePrompt,
+            image_url: publicImageUrl,
+            style,
+            aspect_ratio: aspectRatio,
+            model_version: modelVersion,
+            processing_time: processingTime,
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Database save error:', error);
+        } else {
+          generationId = data.id;
+        }
+      } catch (error) {
+        console.error('Storage/Database operation failed:', error);
+        // Continue with base64 fallback
       }
-    } catch (error) {
-      console.error('Storage/Database operation failed:', error);
+    } else {
+      console.log('Supabase not configured - using base64 fallback');
     }
 
     // Return the generation response

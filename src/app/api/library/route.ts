@@ -3,6 +3,20 @@ import { createServerSupabaseClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error('Supabase environment variables not configured');
+      return NextResponse.json(
+        { 
+          error: 'Database not configured',
+          images: [],
+          total: 0,
+          hasMore: false
+        },
+        { status: 200 } // Return 200 with empty data instead of 500
+      );
+    }
+
     const supabase = createServerSupabaseClient();
     
     // Get query parameters
@@ -32,10 +46,13 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Database query error:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch library images' },
-        { status: 500 }
-      );
+      // If table doesn't exist or other DB error, return empty array instead of 500
+      return NextResponse.json({
+        images: [],
+        total: 0,
+        hasMore: false,
+        error: 'Database not ready - no images available yet'
+      });
     }
 
     return NextResponse.json({
@@ -46,9 +63,12 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Library API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    // Return empty data instead of 500 error
+    return NextResponse.json({
+      images: [],
+      total: 0,
+      hasMore: false,
+      error: 'Service temporarily unavailable'
+    });
   }
 }
