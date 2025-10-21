@@ -27,14 +27,14 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ process.env.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          HUGGING_FACE_API_KEY: ${{ process.env.HUGGING_FACE_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          HUGGING_FACE_API_KEY: ${{ secrets.HUGGING_FACE_API_KEY }}
 
       - name: Deploy Preview to Vercel
         uses: amondnet/vercel-action@v25
         with:
-          vercel-token: ${{ process.env.VERCEL_TOKEN }}
-          vercel-org-id: ${{ process.env.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ process.env.VERCEL_PROJECT_ID }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--target preview'
