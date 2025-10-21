@@ -44,5 +44,6 @@ next-env.d.ts
 
 /.vscode
 
+*.sql
 *.md
 !README.md

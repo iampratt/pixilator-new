@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('generations')
       .select('*')
-      .eq('user_id', 'public') // Only get public library images
+      .eq('user_id', '00000000-0000-0000-0000-000000000000') // Only get public library images
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

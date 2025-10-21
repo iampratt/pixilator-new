@@ -30,12 +30,13 @@ function checkRateLimit(ip: string): boolean {
 async function enhancePrompt(prompt: string): Promise<string> {
   try {
     const response = await axios.post(
-      `${AI_CONFIG.huggingFace.baseUrl}/models/microsoft/DialoGPT-medium`,
+      `${AI_CONFIG.huggingFace.baseUrl}/models/gpt2`,
       {
         inputs: `Enhance this image prompt to be more detailed and descriptive: ${prompt}`,
         parameters: {
           max_length: 150,
           temperature: 0.7,
+          do_sample: true,
         },
       },
       {
@@ -46,10 +47,17 @@ async function enhancePrompt(prompt: string): Promise<string> {
       }
     );
 
-    return response.data[0]?.generated_text || prompt;
+    // Extract the enhanced text from the response
+    const enhancedText = response.data[0]?.generated_text || prompt;
+    
+    // Clean up the response to remove the original prompt prefix
+    const cleanedText = enhancedText.replace(`Enhance this image prompt to be more detailed and descriptive: ${prompt}`, '').trim();
+    
+    return cleanedText || prompt;
   } catch (error) {
     console.error('Prompt enhancement failed:', error);
-    return prompt; // Fallback to original prompt
+    // Simple fallback enhancement
+    return `${prompt}, high quality, detailed, professional`;
   }
 }
 
@@ -195,7 +203,7 @@ export async function POST(request: NextRequest) {
         const { data, error } = await supabase
           .from('generations')
           .insert({
-            user_id: 'public', // Public library - no user authentication required
+            user_id: '00000000-0000-0000-0000-000000000000', // Public library UUID
             original_prompt: prompt,
             refined_prompt: refinedPrompt,
             negative_prompt: negativePrompt,
