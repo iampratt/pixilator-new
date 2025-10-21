@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GenerationForm } from '@/components/forms/GenerationForm';
 
@@ -137,7 +137,7 @@ describe('GenerationForm', () => {
     expect(modelSelect).toHaveValue('black-forest-labs/FLUX.1-dev');
   });
 
-  test('saves to localStorage on successful generation', async () => {
+  test('displays generated image on successful generation', async () => {
     const user = userEvent.setup();
     const mockResponse = {
       id: 'test-id',
@@ -147,8 +147,8 @@ describe('GenerationForm', () => {
       negativePrompt: 'negative prompt',
       style: 'realistic',
       aspectRatio: '1:1',
-      modelVersion: 'sd-1.5',
-      userId: 'user-id',
+      modelVersion: 'tencent/HunyuanImage-3.0',
+      userId: 'public',
       createdAt: new Date().toISOString(),
       processingTime: 1000
     };
@@ -156,15 +156,6 @@ describe('GenerationForm', () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse,
-    });
-    
-    // Mock localStorage
-    const mockLocalStorage = {
-      getItem: jest.fn().mockReturnValue('[]'),
-      setItem: jest.fn(),
-    };
-    Object.defineProperty(window, 'localStorage', {
-      value: mockLocalStorage,
     });
     
     render(<GenerationForm />);
@@ -176,10 +167,9 @@ describe('GenerationForm', () => {
     await user.click(submitButton);
     
     await waitFor(() => {
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'pixilator_history',
-        expect.stringContaining('test-id')
-      );
+      expect(screen.getByText(/generated image/i)).toBeInTheDocument();
+      expect(screen.getByAltText('test prompt')).toBeInTheDocument();
+      expect(screen.getByText('enhanced test prompt')).toBeInTheDocument();
     });
   });
 });
