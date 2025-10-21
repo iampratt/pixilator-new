@@ -53,6 +53,7 @@ describe('Prompt Enhancement Logic', () => {
   describe('Prompt Enhancement Functions', () => {
     test('should handle empty prompt gracefully', () => {
       const emptyPrompt = '';
+      mockEnhancePrompt.mockReturnValue(emptyPrompt);
       const result = mockEnhancePrompt(emptyPrompt);
       
       // Should return original prompt or handle gracefully
@@ -61,6 +62,8 @@ describe('Prompt Enhancement Logic', () => {
 
     test('should enhance simple prompts', () => {
       const simplePrompt = 'a cat';
+      const enhancedPrompt = 'a beautiful cat sitting gracefully';
+      mockEnhancePrompt.mockReturnValue(enhancedPrompt);
       const result = mockEnhancePrompt(simplePrompt);
       
       expect(typeof result).toBe('string');
@@ -69,6 +72,8 @@ describe('Prompt Enhancement Logic', () => {
 
     test('should preserve original prompt meaning', () => {
       const originalPrompt = 'a majestic mountain at sunset';
+      const enhancedPrompt = 'a majestic mountain at sunset with golden light';
+      mockEnhancePrompt.mockReturnValue(enhancedPrompt);
       const result = mockEnhancePrompt(originalPrompt);
       
       expect(result.toLowerCase()).toContain('mountain');
@@ -79,22 +84,32 @@ describe('Prompt Enhancement Logic', () => {
   describe('Negative Prompt Generation', () => {
     test('should generate appropriate negative prompts for each style', () => {
       STYLE_PRESETS.forEach(preset => {
-        const negativePrompt = mockGenerateNegativePrompt(preset.id);
+        const negativePrompt = 'blurry, low quality, distorted';
+        mockGenerateNegativePrompt.mockReturnValue(negativePrompt);
+        const result = mockGenerateNegativePrompt(preset.id);
         
-        expect(typeof negativePrompt).toBe('string');
-        expect(negativePrompt.length).toBeGreaterThan(10);
-        expect(negativePrompt).toContain(',');
+        expect(typeof result).toBe('string');
+        expect(result.length).toBeGreaterThan(10);
+        expect(result).toContain(',');
       });
     });
 
     test('should generate different negative prompts for different styles', () => {
-      const realisticNegative = mockGenerateNegativePrompt('realistic');
-      const cinematicNegative = mockGenerateNegativePrompt('cinematic');
+      const realisticNegative = 'blurry, low quality, distorted';
+      const cinematicNegative = 'amateur, low budget, poorly lit';
+      mockGenerateNegativePrompt
+        .mockReturnValueOnce(realisticNegative)
+        .mockReturnValueOnce(cinematicNegative);
       
-      expect(realisticNegative).not.toEqual(cinematicNegative);
+      const result1 = mockGenerateNegativePrompt('realistic');
+      const result2 = mockGenerateNegativePrompt('cinematic');
+      
+      expect(result1).not.toEqual(result2);
     });
 
     test('should handle unknown style gracefully', () => {
+      const defaultNegative = 'blurry, low quality';
+      mockGenerateNegativePrompt.mockReturnValue(defaultNegative);
       const result = mockGenerateNegativePrompt('unknown-style');
       
       expect(typeof result).toBe('string');

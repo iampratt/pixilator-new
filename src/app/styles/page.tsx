@@ -12,7 +12,7 @@ interface StylePreset {
 }
 
 export default function StylesPage() {
-  const [styles, setStyles] = useState<StylePreset[]>(STYLE_PRESETS);
+  const [styles, setStyles] = useState<StylePreset[]>([...STYLE_PRESETS]);
   const [isEditing, setIsEditing] = useState(false);
   const [password, setPassword] = useState('');
   const [showPasswordForm, setShowPasswordForm] = useState(false);

@@ -14,25 +14,22 @@ describe('Application Configuration', () => {
   });
 
   describe('AI_CONFIG', () => {
-    test('should have Stable Diffusion configuration', () => {
-      expect(AI_CONFIG.stableDiffusion.baseUrl).toBeTruthy();
-      expect(AI_CONFIG.stableDiffusion.modelVersions).toHaveLength(2);
-      expect(AI_CONFIG.stableDiffusion.modelVersions[0]).toHaveProperty('id');
-      expect(AI_CONFIG.stableDiffusion.modelVersions[0]).toHaveProperty('name');
-      expect(AI_CONFIG.stableDiffusion.modelVersions[0]).toHaveProperty('endpoint');
-    });
-
     test('should have Hugging Face configuration', () => {
       expect(AI_CONFIG.huggingFace.baseUrl).toBeTruthy();
       expect(AI_CONFIG.huggingFace.models).toHaveProperty('promptEnhancement');
       expect(AI_CONFIG.huggingFace.models).toHaveProperty('negativePromptGeneration');
     });
 
-    test('should have valid model versions', () => {
-      AI_CONFIG.stableDiffusion.modelVersions.forEach(model => {
-        expect(model.id).toMatch(/^sd-/);
+    test('should have Hugging Face image models', () => {
+      expect(AI_CONFIG.huggingFace.imageModels).toHaveLength(3);
+      expect(AI_CONFIG.huggingFace.imageModels[0]).toHaveProperty('id');
+      expect(AI_CONFIG.huggingFace.imageModels[0]).toHaveProperty('name');
+    });
+
+    test('should have valid image model versions', () => {
+      AI_CONFIG.huggingFace.imageModels.forEach(model => {
+        expect(model.id).toBeTruthy();
         expect(model.name).toBeTruthy();
-        expect(model.endpoint).toBeTruthy();
       });
     });
   });
