@@ -1,0 +1,50 @@
+---
+description: 'AI service integration patterns and best practices'
+---
+
+# 🤖 AI Integration Guidelines
+
+## Core AI Workflow
+
+The Pixilator application follows a sophisticated AI pipeline:
+
+1. **User Input** → Raw prompt from user interface
+2. **Prompt Refinement** → LLM call to expand and improve the prompt
+3. **Negative Prompt Generation** → AI-generated negative prompts for better results
+4. **Image Generation** → Stable Diffusion API call with refined prompts
+5. **Post-processing** → Image optimization and metadata extraction
+
+## AI Service Configuration
+
+- **Stable Diffusion**: Multiple model versions support
+- **LLaMA-2/Mistral**: Via Hugging Face Inference API for prompt enhancement
+- **Rate Limiting**: Implement proper throttling to stay within free tiers
+- **Error Handling**: Graceful fallbacks for AI service failures
+
+## Prompt Engineering Best Practices
+
+- **Input Validation**: Sanitize user prompts before processing
+- **Prompt Templates**: Use structured templates for consistent results
+- **Style Presets**: Predefined style configurations (Cinematic, Vaporwave, etc.)
+- **Parameter Tuning**: Configurable aspect ratios, model versions, and quality settings
+
+## Asynchronous Processing
+
+- **Job Queue**: Handle long-running image generation tasks
+- **Polling Mechanism**: Check job status and retrieve results
+- **Progress Indicators**: User feedback during generation process
+- **Timeout Handling**: Proper handling of generation timeouts
+
+## AI Service Integration Patterns
+
+- **API Abstraction**: Clean interfaces for different AI providers
+- **Fallback Services**: Multiple providers for redundancy
+- **Caching Strategy**: Cache results to reduce API calls
+- **Cost Optimization**: Monitor usage to stay within free tier limits
+
+## Data Management
+
+- **Prompt Storage**: Save original and refined prompts
+- **Metadata Tracking**: Store generation parameters and results
+- **User History**: Maintain generation history with full context
+- **Analytics**: Track usage patterns for optimization

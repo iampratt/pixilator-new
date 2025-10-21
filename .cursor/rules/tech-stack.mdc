@@ -1,0 +1,59 @@
+---
+alwaysApply: true
+---
+
+# 🛠️ Technology Stack & Framework Guidelines
+
+## Frontend Stack
+
+- **Framework**: Next.js with React for full-stack capabilities
+- **Styling**: Modern CSS-in-JS or Tailwind CSS for responsive design
+- **State Management**: React Context or Zustand for simple state needs
+- **UI Components**: Custom components with modern UX patterns
+
+## Backend & API
+
+- **Runtime**: Node.js with TypeScript
+- **API**: Serverless functions (Vercel/Netlify Functions)
+- **Core Endpoint**: `/api/generate` for the main image generation workflow
+- **Rate Limiting**: Implement to stay within free-tier limits
+
+## Database & Storage
+
+- **Primary DB**: Supabase PostgreSQL
+  - User authentication and management
+  - Image generation history and metadata
+  - Prompt storage and refinement logs
+- **File Storage**: Cloudinary Free Tier or Supabase Storage
+  - Generated image files
+  - Optimized delivery with CDN
+
+## AI Services Integration
+
+- **Image Generation**: Stable Diffusion API
+  - Support multiple model versions
+  - Configurable aspect ratios and styles
+- **Prompt Enhancement**: LLaMA-2/Mistral via Hugging Face Inference API
+  - Expand and refine user prompts
+  - Generate negative prompts automatically
+
+## Development Environment
+
+- **Package Manager**: npm or yarn
+- **TypeScript**: Strict typing for better development experience
+- **Environment Variables**: Proper .env management for different environments
+- **Version Control**: Git with GitHub integration
+
+## Deployment & Hosting
+
+- **Frontend**: Vercel or Netlify (free tier)
+- **Backend**: Serverless functions on same platform
+- **CDN**: Built-in CDN for static assets and generated images
+- **CI/CD**: GitHub Actions for automated testing and deployment
+
+## Performance Considerations
+
+- **Client-side Caching**: LocalStorage for last 5-10 generations
+- **Asynchronous Processing**: Polling mechanism for long-running AI tasks
+- **Image Optimization**: Automatic compression and format optimization
+- **Error Recovery**: Graceful handling of AI service timeouts and failures

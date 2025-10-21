@@ -1,0 +1,60 @@
+---
+alwaysApply: true
+---
+
+# 🔄 Development Workflow & Testing
+
+## Server Management
+
+- **Always start new server** after making changes for testing
+- **Kill existing servers** before starting new ones to prevent port conflicts
+- **Use proper development scripts** for different environments (dev, test, prod)
+
+## Testing Strategy
+
+- **Unit Tests**: Write tests for critical functions:
+  - Prompt refinement/expansion logic
+  - API payload construction and validation
+  - Image generation workflow components
+  - Database operations and data transformations
+- **Integration Tests**: Test API endpoints and database interactions
+- **End-to-End Tests**: User workflow testing for complete generation process
+
+## Development Process
+
+1. **Check existing code** before implementing new features
+2. **Iterate on patterns** rather than creating new implementations
+3. **Test locally** before committing changes
+4. **Handle errors gracefully** with user-friendly messages
+5. **Document changes** in commit messages
+
+## Error Handling Standards
+
+- **Server-side**: Catch and log specific API errors
+  - Rate limit exceeded
+  - Invalid prompts
+  - AI service timeouts
+  - Database connection issues
+- **Client-side**: Display friendly error messages instead of raw error codes
+- **Fallback mechanisms**: Graceful degradation when services are unavailable
+
+## Code Quality Checks
+
+- **Linting**: Run linter before committing
+- **Type Checking**: Ensure TypeScript compilation passes
+- **Test Coverage**: Maintain test coverage for critical paths
+- **Performance**: Monitor bundle size and API response times
+
+## Deployment Pipeline
+
+- **Automated Testing**: Run tests on every push
+- **Environment Validation**: Ensure proper environment variables
+- **Deployment Checks**: Verify deployment success
+- **Rollback Plan**: Quick rollback capability for failed deployments
+
+## Development Tools
+
+- **Hot Reload**: Fast development iteration
+- **Debugging**: Proper error logging and debugging tools
+- **API Testing**: Tools for testing serverless functions locally
+- **Database Management**: Tools for managing Supabase connections

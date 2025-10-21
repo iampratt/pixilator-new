@@ -1,0 +1,54 @@
+---
+globs: *.tsx,*.ts,*.jsx,*.js
+---
+
+# 🎨 Frontend Development Patterns
+
+## Component Architecture
+
+- **Functional Components**: Use React hooks for state management
+- **Custom Hooks**: Extract reusable logic into custom hooks
+- **Component Composition**: Build complex UIs from simple, reusable components
+- **Props Interface**: Define clear TypeScript interfaces for component props
+
+## UI/UX Standards
+
+- **Modern Design**: Clean, intuitive interface following current design trends
+- **Responsive Layout**: Mobile-first design with proper breakpoints
+- **Loading States**: Clear feedback during AI generation process
+- **Error States**: User-friendly error messages and recovery options
+
+## State Management
+
+- **Local State**: Use useState for component-specific state
+- **Global State**: React Context or Zustand for app-wide state
+- **Server State**: Proper handling of API responses and loading states
+- **Form State**: Controlled components with validation
+
+## User Experience Features
+
+- **Style Customization**: Controls for model version, aspect ratio, and style presets
+- **Generation History**: Dedicated history page with full metadata
+- **Local Caching**: Client-side localStorage for recent generations
+- **User Authentication**: Secure login/registration with Supabase Auth
+
+## Performance Optimization
+
+- **Code Splitting**: Lazy load components and routes
+- **Image Optimization**: Proper image loading and caching strategies
+- **Bundle Size**: Monitor and optimize JavaScript bundle size
+- **API Optimization**: Minimize unnecessary API calls
+
+## Form Handling
+
+- **Input Validation**: Client-side validation with proper error messages
+- **Controlled Components**: Use controlled inputs for form state
+- **Submit Handling**: Proper form submission with loading states
+- **Accessibility**: Ensure forms are accessible with proper labels and ARIA attributes
+
+## Styling Guidelines
+
+- **Consistent Theming**: Use design tokens for colors, spacing, and typography
+- **Component Styling**: Scoped styles or CSS modules
+- **Responsive Design**: Mobile-first approach with proper breakpoints
+- **Dark Mode**: Consider implementing theme switching
