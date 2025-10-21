@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --salt-paper-bg: #f8f8f8;
+  --salt-paper-dark: #1a1a1a;
+  --salt-paper-accent: #333333;
+  --salt-paper-border: #e0e0e0;
+  --background: var(--salt-paper-bg);
+  --foreground: var(--salt-paper-dark);
 }
 
 @theme inline {
@@ -12,15 +16,98 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  background: linear-gradient(135deg, var(--salt-paper-bg) 0%, #ffffff 100%);
+  color: var(--salt-paper-dark);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.salt-paper-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--salt-paper-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.salt-paper-button {
+  background: var(--salt-paper-dark);
+  color: white;
+  border: 2px solid var(--salt-paper-dark);
+  transition: all 0.3s ease;
+}
+
+.salt-paper-button:hover {
+  background: transparent;
+  color: var(--salt-paper-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.salt-paper-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--salt-paper-border);
+  color: var(--salt-paper-dark);
+}
+
+.salt-paper-input:focus {
+  border-color: var(--salt-paper-dark);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+}
+
+/* Subtle animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+.animate-bounce-subtle {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
